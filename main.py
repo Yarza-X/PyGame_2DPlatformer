@@ -1,6 +1,9 @@
 import sys, pygame
 
-WIDTH = 400
+from box import Box
+from player import Player
+
+WIDTH = 384
 HEIGHT = 300
 BACKGROUND = "#6292d1"
 
@@ -10,16 +13,26 @@ def game():
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
 
+    player = Player(100, 100)
+    boxes = pygame.sprite.Group()
+    for box in range(0, 400, 32):
+        boxes.add(Box(box, 300))
+
     while True:
-        for evant in pygame.event.get():
-            if evant.type == pygame.QUIT:
+        screen.fill(BACKGROUND)
+
+        player.update(boxes)
+        player.draw(screen)
+        boxes.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)  # FPS
+        # print(clock.get_fps())
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-        screen.fill(BACKGROUND)
-        pygame.display.flip()
-
-        clock.tick(60)  # FPS
 
 
 if __name__ == '__main__':
