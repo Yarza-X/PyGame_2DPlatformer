@@ -5,10 +5,11 @@ from sprite import Sprite
 
 class Player(Sprite):
     def __init__(self, startx, starty):
-        super().__init__("sprites/player/P1.png", startx, starty)
+        super().__init__("sprites/player/P_idle_01.png", startx, starty)
 
         self.stand_image = self.image
-        self.walk_cycle = [pygame.image.load(f"sprites/player/P_walk_{i:0>2}.png") for i in range(1, 2)]
+        self.walk_cycle = [pygame.image.load(f"sprites/player/P_walk_{i:0>2}.png") for i in range(1, 18)]
+        self.idle_cycle = [pygame.image.load(f"sprites/player/P_idle_{i:0>2}.png") for i in range(1, 16)]
         self.animation_index = 0
         self.facing_left = False
 
@@ -21,7 +22,16 @@ class Player(Sprite):
         self.image = self.walk_cycle[self.animation_index]
         if self.facing_left:
             self.image = pygame.transform.flip(self.image, True, False)
-        if self.animation_index < len(self.walk_cycle)-1:
+        if self.animation_index < len(self.walk_cycle) - 1:
+            self.animation_index += 1
+        else:
+            self.animation_index = 0
+
+    def idle_animation(self):
+        self.image = self.idle_cycle[self.animation_index]
+        if self.facing_left:
+            self.image = pygame.transform.flip(self.image, True, False)
+        if self.animation_index < len(self.idle_cycle) - 1:
             self.animation_index += 1
         else:
             self.animation_index = 0
@@ -40,7 +50,7 @@ class Player(Sprite):
             self.walk_animation()
             horizontal_speed = self.speed
         else:
-            self.image = self.stand_image
+            self.idle_animation()
         if key[pygame.K_UP] and onground:
             self.vertical_speed = -self.jump
         if self.vertical_speed < 10 and not onground:
